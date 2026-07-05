@@ -1,0 +1,19 @@
+# Dependencias
+node_modules/
+dashboard/node_modules/
+
+# Builds
+dashboard/dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Snapshots exportados (datos personales — no subir)
+*snapshot*.json

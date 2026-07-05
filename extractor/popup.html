@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unfollowing Extractor</title>
+    <style>
+      :root { color-scheme: light dark; }
+      * { box-sizing: border-box; }
+      body {
+        width: 320px;
+        margin: 0;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: #17171f;
+        color: #f0f0f5;
+        padding: 16px;
+      }
+      .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+      .logo {
+        width: 34px; height: 34px; border-radius: 9px;
+        background: linear-gradient(135deg, #f76b1c, #d6336c 50%, #7048e8);
+        display: grid; place-items: center; font-size: 17px;
+      }
+      h1 { font-size: 1rem; margin: 0; }
+      p.sub { color: #9a9aad; font-size: 0.78rem; margin: 2px 0 14px; }
+      button {
+        width: 100%;
+        border: none;
+        border-radius: 9px;
+        padding: 11px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+      }
+      #extract { background: linear-gradient(135deg, #f76b1c, #d6336c 50%, #7048e8); color: #fff; }
+      #extract:disabled { opacity: 0.5; cursor: default; }
+      .secondary { background: #1f1f2a; color: #f0f0f5; margin-top: 8px; display: none; }
+      #status {
+        margin-top: 12px;
+        font-size: 0.82rem;
+        color: #9a9aad;
+        min-height: 18px;
+        white-space: pre-line;
+      }
+      .err { color: #ff8787 !important; }
+      .ok { color: #69db7c !important; }
+      .counts { display: flex; gap: 10px; margin-top: 10px; }
+      .count { flex: 1; background: #1f1f2a; border-radius: 9px; padding: 8px; text-align: center; }
+      .count .n { font-size: 1.2rem; font-weight: 700; }
+      .count .l { font-size: 0.68rem; color: #9a9aad; text-transform: uppercase; }
+      .hint { font-size: 0.72rem; color: #6b6b7b; margin-top: 12px; line-height: 1.4; }
+    </style>
+  </head>
+  <body>
+    <div class="brand">
+      <div class="logo">👀</div>
+      <div>
+        <h1>Unfollowing</h1>
+        <p class="sub">Extractor de seguidores</p>
+      </div>
+    </div>
+
+    <button id="extract">Extraer ahora</button>
+    <button id="download" class="secondary">⬇ Descargar snapshot.json</button>
+    <button id="copy" class="secondary">📋 Copiar al portapapeles</button>
+
+    <div class="counts" id="counts" style="display:none">
+      <div class="count"><div class="n" id="nFollowers">0</div><div class="l">Seguidores</div></div>
+      <div class="count"><div class="n" id="nFollowing">0</div><div class="l">Seguidos</div></div>
+    </div>
+
+    <div id="status"></div>
+
+    <div class="hint">
+      Debes tener una pestaña de <b>instagram.com</b> abierta y con sesión iniciada.
+      Los datos no salen de tu equipo: se guardan en el archivo que descargues.
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Unfollowing Extractor",
+  "version": "1.0.0",
+  "description": "Extrae tus seguidores y seguidos de Instagram a un snapshot JSON para el dashboard Unfollowing. Usa tu propia sesión, todo local.",
+  "permissions": ["scripting", "tabs"],
+  "host_permissions": [
+    "https://www.instagram.com/*",
+    "https://i.instagram.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Unfollowing Extractor"
+  }
+}
