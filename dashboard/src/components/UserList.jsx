@@ -56,7 +56,7 @@ export default function UserList({ users, showDate = false, csvName = 'lista.csv
       ) : (
         <ul className="user-list">
           {filtered.map((u) => (
-            <li className="user-row" key={u.id}>
+            <li className="user-row" key={u.id + (u.detectedAt || "")}>
               <div className="user-meta">
                 <div className="name">
                   {u.username}

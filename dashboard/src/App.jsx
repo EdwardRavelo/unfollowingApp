@@ -54,12 +54,12 @@ export default function App() {
     : {}
 
   const TABS = [
-    { id: 'import', label: 'Importar' },
-    { id: 'overview', label: 'Resumen', needsData: true },
-    { id: 'unfollowers', label: 'Te dejaron', needsData: true, badge: badges.unfollowers },
-    { id: 'relations', label: 'No te siguen', needsData: true, badge: badges.relations },
-    { id: 'new', label: 'Nuevos', needsData: true, badge: badges.new },
-    { id: 'history', label: 'Historial', needsData: true },
+    { id: 'overview', label: '📊 Resumen', needsData: true },
+    { id: 'unfollowers', label: '💔 Te dejaron de seguir', needsData: true, badge: badges.unfollowers },
+    { id: 'relations', label: '↩️ No te siguen de vuelta', needsData: true, badge: badges.relations },
+    { id: 'new', label: '✨ Seguidores nuevos', needsData: true, badge: badges.new },
+    { id: 'history', label: '🕒 Historial', needsData: true },
+    { id: 'import', label: hasData ? '📥 Importar' : '📥 Empezar' },
   ]
 
   return (
@@ -71,6 +71,11 @@ export default function App() {
           <p>Mide tus seguidores y descubre quién te dejó de seguir · 100% local</p>
         </div>
         <div className="spacer" />
+        {hasData && (
+          <button className="btn small" onClick={() => setTab('import')} title="Importar una captura nueva">
+            + Nueva captura
+          </button>
+        )}
         <button className="icon-btn" title="Cambiar tema" onClick={cycle}>{icon}</button>
       </header>
 
@@ -90,11 +95,11 @@ export default function App() {
       {!loaded ? (
         <div className="empty">Cargando…</div>
       ) : tab === 'import' ? (
-        <Import snapshots={snapshots} onImport={onImport} onDelete={onDelete} onClear={onClear} />
+        <Import snapshots={snapshots} onImport={onImport} onDelete={onDelete} onClear={onClear} onNavigate={setTab} />
       ) : !hasData ? (
         <div className="empty">Importa una captura para empezar.</div>
       ) : tab === 'overview' ? (
-        <Overview snapshots={snapshots} />
+        <Overview snapshots={snapshots} onNavigate={setTab} />
       ) : tab === 'unfollowers' ? (
         <Unfollowers snapshots={snapshots} />
       ) : tab === 'relations' ? (

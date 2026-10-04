@@ -3,16 +3,43 @@
 
 export const SCHEMA_VERSION = 1
 
+/** Quita usuarios repetidos (mismo id) y entradas sin id. */
+function dedupe(users) {
+  const m = new Map()
+  for (const u of users) if (u.id) m.set(u.id, u)
+  return [...m.values()]
+}
+
 /** Normaliza un objeto User asegurando tipos y defaults seguros. */
 function normalizeUser(u) {
   return {
-    id: String(u.id),
+    id: u.id == null ? '' : String(u.id),
     username: String(u.username ?? ''),
     fullName: u.fullName ?? '',
     isVerified: Boolean(u.isVerified),
     isPrivate: Boolean(u.isPrivate),
     profilePic: u.profilePic ?? '',
   }
+}
+
+function optionalCount(n) {
+  return Number.isFinite(n) && n >= 0 ? n : undefined
+}
+
+/**
+ * ¿La captura trae menos usuarios de los que dice el perfil? IG cuenta cuentas
+ * desactivadas que la API no devuelve, así que toleramos un pequeño hueco.
+ * Devuelve la lista de faltantes por tipo, vacía si está completa o no se sabe.
+ */
+export function incompleteParts(snapshot) {
+  const parts = []
+  const check = (label, got, expected) => {
+    if (expected == null) return
+    if (expected - got > Math.max(5, expected * 0.02)) parts.push({ label, got, expected })
+  }
+  check('seguidores', snapshot.followers.length, snapshot.account?.followerCount)
+  check('seguidos', snapshot.following.length, snapshot.account?.followingCount)
+  return parts
 }
 
 /**
@@ -46,9 +73,11 @@ export function parseSnapshot(raw) {
       account: {
         userId: String(raw.account?.userId ?? ''),
         username: String(raw.account?.username ?? ''),
+        followerCount: optionalCount(raw.account?.followerCount),
+        followingCount: optionalCount(raw.account?.followingCount),
       },
-      followers: raw.followers.map(normalizeUser),
-      following: raw.following.map(normalizeUser),
+      followers: dedupe(raw.followers.map(normalizeUser)),
+      following: dedupe(raw.following.map(normalizeUser)),
     },
   }
 }

@@ -11,7 +11,9 @@ las dos piezas: mientras el extractor produzca este formato, el dashboard funcio
   "source": "chrome-extension",               // "chrome-extension" | "instagram-export" | "manual"
   "account": {
     "userId": "123456789",                     // id numérico de tu cuenta (estable)
-    "username": "mi_usuario"
+    "username": "mi_usuario",
+    "followerCount": 1234,                     // opcional: contador del perfil al extraer
+    "followingCount": 567                      // opcional: idem. Sirve para detectar capturas incompletas
   },
   "followers": [ /* array de User */ ],
   "following": [ /* array de User */ ]
@@ -34,5 +36,9 @@ las dos piezas: mientras el extractor produzca este formato, el dashboard funcio
 ### Reglas
 - La identidad de un usuario es su `id`, **no** su `username` (el username puede cambiar).
 - `capturedAt` debe ser único-ish por captura; el dashboard ordena el historial por esta fecha.
+- Si `followerCount`/`followingCount` vienen y la lista tiene bastantes menos usuarios
+  (más de 5 y del 2 %), el dashboard marca la captura como **incompleta**: compararla daría
+  unfollowers falsos.
+- El dashboard descarta usuarios repetidos (mismo `id`) al importar.
 - Campos opcionales pueden faltar; el dashboard usa valores por defecto seguros.
 - Si en el futuro cambia el formato, se incrementa `schemaVersion` y el dashboard migra o rechaza.
