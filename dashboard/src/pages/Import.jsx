@@ -101,8 +101,8 @@ export default function Import({ snapshots, onImport, onDelete, onClear, onNavig
           <li className={nextStep === 1 ? '' : 'done'}>
             <div className="num">2</div>
             <div>
-              <strong>Pulsa «Extraer ahora»</strong> en la extensión, con tu sesión de Instagram iniciada.
-              <div className="muted">El archivo se descarga solo en Descargas/unfollowing.</div>
+              <strong>Pulsa «Extraer ahora»</strong> en la extensión, con instagram.com abierto y la sesión iniciada.
+              <div className="muted">No cierres el popup hasta que termine; luego pulsa «Descargar snapshot.json».</div>
             </div>
           </li>
           <li className={nextStep === 1 ? '' : 'done'}>
@@ -137,7 +137,7 @@ export default function Import({ snapshots, onImport, onDelete, onClear, onNavig
           >
             <div className="big">📥</div>
             <strong>Arrastra el archivo aquí</strong>
-            <div className="muted">o haz clic para buscarlo en Descargas/unfollowing</div>
+            <div className="muted">o haz clic para buscar el snapshot-*.json en tu carpeta de Descargas</div>
             <input
               ref={inputRef}
               type="file"
@@ -151,7 +151,7 @@ export default function Import({ snapshots, onImport, onDelete, onClear, onNavig
           <button className="dropzone paste" onClick={pasteFromClipboard}>
             <div className="big">📋</div>
             <strong>Pegar desde la extensión</strong>
-            <div className="muted">Pulsa «Copiar» en la extensión y luego aquí (o Ctrl+V)</div>
+            <div className="muted">Pulsa «Copiar al portapapeles» en la extensión y luego aquí (o Ctrl+V)</div>
           </button>
         </div>
         {notice && (

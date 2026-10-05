@@ -11,7 +11,7 @@ It has two independent pieces that share **one** contract, the snapshot JSON fil
 - `extractor/`: a Manifest V3 Chrome extension written in plain JS with no build step. It produces `snapshot-YYYY-MM-DD.json`.
 - `dashboard/`: a React 19 + Vite app (plain JSX, no TypeScript, no router). It imports snapshots, stores them in IndexedDB and analyzes them.
 
-If you change the snapshot shape, update all three of these together: `extractor/background.js` (`SCHEMA_VERSION`), `dashboard/src/lib/schema.js` (`SCHEMA_VERSION`, `parseSnapshot`) and `SNAPSHOT_FORMAT.md`. Breaking changes bump `schemaVersion`. The dashboard currently rejects any version other than the one it expects.
+If you change the snapshot shape, update all three of these together: `extractor/popup.js` (`SCHEMA_VERSION`), `dashboard/src/lib/schema.js` (`SCHEMA_VERSION`, `parseSnapshot`) and `SNAPSHOT_FORMAT.md`. Breaking changes bump `schemaVersion`. The dashboard currently rejects any version other than the one it expects.
 
 ## Commands
 
@@ -45,9 +45,11 @@ The extractor has no build step. Load `extractor/` as an unpacked extension at `
 
 ## Extractor architecture
 
-`background.js` (the MV3 service worker) does the work. It keeps extraction state in `chrome.storage.local` (`state`, `lastSnapshot`), and `popup.js` only renders that state and sends `start`/`download` messages, so closing the popup doesn't stop an extraction. The worker opens an instagram.com tab if needed and injects `extractInPage` into it with `chrome.scripting.executeScript`. It does **not** await the return value: the page sends `progress`, `done` and `error` messages, and during rate-limit waits it sends heartbeats every 10 s so the worker stays alive. When the run finishes, the worker builds the snapshot and auto-downloads it to `Downloads/unfollowing/`.
+`popup.js` injects `extractInPage` into an open instagram.com tab with `chrome.scripting.executeScript` and awaits its return value, so the popup must stay open until the extraction finishes. The injected function runs in the page context: it reads the `ds_user_id` and `csrftoken` cookies and paginates Instagram's internal `api/v1` friendship endpoints. Between pages it waits a random 800–2000 ms, and it backs off 30 s on HTTP 429. It reports progress back with `chrome.runtime.sendMessage`. When the run finishes, the popup offers "Descargar snapshot.json" (a blob download) and "Copiar al portapapeles".
 
-`extractInPage` reads the `ds_user_id` and `csrftoken` cookies and paginates Instagram's internal `api/v1` friendship endpoints. It deduplicates users by id and retries with exponential backoff on 429 responses and on 200 responses with `status: "fail"` (previously these truncated lists silently). It also records the profile's follower/following counts so incomplete captures can be detected. Because `extractInPage` is serialized into the page, it must stay self-contained: it cannot reference anything outside its own body, and it receives everything it needs through `args`. If Instagram changes its API, the only things to update are `IG_APP_ID` and the endpoint URLs/headers in `background.js`.
+Because `extractInPage` is serialized into the page, it must stay self-contained: it cannot reference anything outside its own body, and it receives everything it needs through `args`. If Instagram changes its API, the only things to update are `IG_APP_ID` and the endpoint URLs/headers in `popup.js`.
+
+Instagram returns at most about 10 users per page and rate-limits bursts of requests (HTTP 429, or 200 with `{"status":"fail"}`), so many runs in a short time get the account temporarily throttled. The user decided to keep this original popup-based extractor. A background-worker version with auto-download (commit 72e670c) was reverted at their request.
 
 ## Known doc/code mismatch
 

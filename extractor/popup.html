@@ -5,59 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Unfollowing Extractor</title>
     <style>
-      :root {
-        color-scheme: light dark;
-        --bg: #ffffff; --surface: #f3f3f8; --border: #e3e3ec;
-        --text: #1a1a24; --muted: #6b6b7b;
-        --pos: #2f9e44; --neg: #e03131; --warn: #b35c00; --warn-bg: rgba(245, 159, 0, 0.12);
-        --grad: linear-gradient(135deg, #f76b1c, #d6336c 50%, #7048e8);
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #17171f; --surface: #1f1f2a; --border: #2a2a37;
-          --text: #f0f0f5; --muted: #9a9aad; --pos: #69db7c; --neg: #ff8787; --warn: #ffd43b;
-        }
-      }
+      :root { color-scheme: light dark; }
       * { box-sizing: border-box; }
-      body { width: 340px; margin: 0; padding: 16px; font: 14px/1.4 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); }
-      .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-      .logo { width: 34px; height: 34px; border-radius: 9px; background: var(--grad); display: grid; place-items: center; font-size: 17px; }
+      body {
+        width: 320px;
+        margin: 0;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: #17171f;
+        color: #f0f0f5;
+        padding: 16px;
+      }
+      .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+      .logo {
+        width: 34px; height: 34px; border-radius: 9px;
+        background: linear-gradient(135deg, #f76b1c, #d6336c 50%, #7048e8);
+        display: grid; place-items: center; font-size: 17px;
+      }
       h1 { font-size: 1rem; margin: 0; }
-      .sub { color: var(--muted); font-size: 0.78rem; margin: 0; }
-
-      /* Pasos: dónde estás en el proceso */
-      .steps { display: flex; gap: 4px; margin-bottom: 14px; }
-      .step { flex: 1; text-align: center; font-size: 0.7rem; color: var(--muted); }
-      .step .dot { height: 4px; border-radius: 4px; background: var(--border); margin-bottom: 5px; }
-      .step.active { color: var(--text); font-weight: 600; }
-      .step.active .dot { background: var(--grad); }
-      .step.done .dot { background: var(--pos); }
-
-      .card { background: var(--surface); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
-      .card h2 { font-size: 0.95rem; margin: 0 0 4px; }
-      .card p { margin: 0; color: var(--muted); font-size: 0.82rem; }
-      .card ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.8rem; }
-
-      button, a.btn { display: block; width: 100%; border: none; border-radius: 9px; padding: 11px; font-family: inherit; font-weight: 600; font-size: 0.9rem; cursor: pointer; text-align: center; text-decoration: none; }
-      .primary { background: var(--grad); color: #fff; }
-      .primary:disabled { opacity: 0.5; cursor: default; }
-      .ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); margin-top: 8px; }
-      .link { background: none; color: var(--muted); font-weight: 400; font-size: 0.78rem; padding: 6px; margin-top: 4px; text-decoration: underline; }
-
-      .counts { display: flex; gap: 8px; margin-top: 10px; }
-      .count { flex: 1; background: var(--bg); border-radius: 9px; padding: 8px; }
-      .count .n { font-size: 1.15rem; font-weight: 700; }
-      .count .of { font-size: 0.72rem; color: var(--muted); font-weight: 400; }
-      .count .l { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; }
-      .bar { height: 4px; background: var(--border); border-radius: 4px; margin-top: 6px; overflow: hidden; }
-      .bar > div { height: 100%; width: 0; background: var(--grad); transition: width .3s; }
-      .note { margin-top: 10px; font-size: 0.8rem; color: var(--muted); min-height: 1.2em; }
-
-      .ok h2 { color: var(--pos); }
-      .err h2 { color: var(--neg); }
-      .warn { margin-top: 10px; font-size: 0.78rem; color: var(--warn); background: var(--warn-bg); border-radius: 8px; padding: 8px 10px; }
-      .foot { font-size: 0.72rem; color: var(--muted); margin-top: 12px; text-align: center; }
-      [hidden] { display: none !important; }
+      p.sub { color: #9a9aad; font-size: 0.78rem; margin: 2px 0 14px; }
+      button {
+        width: 100%;
+        border: none;
+        border-radius: 9px;
+        padding: 11px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+      }
+      #extract { background: linear-gradient(135deg, #f76b1c, #d6336c 50%, #7048e8); color: #fff; }
+      #extract:disabled { opacity: 0.5; cursor: default; }
+      .secondary { background: #1f1f2a; color: #f0f0f5; margin-top: 8px; display: none; }
+      #status {
+        margin-top: 12px;
+        font-size: 0.82rem;
+        color: #9a9aad;
+        min-height: 18px;
+        white-space: pre-line;
+      }
+      .err { color: #ff8787 !important; }
+      .ok { color: #69db7c !important; }
+      .counts { display: flex; gap: 10px; margin-top: 10px; }
+      .count { flex: 1; background: #1f1f2a; border-radius: 9px; padding: 8px; text-align: center; }
+      .count .n { font-size: 1.2rem; font-weight: 700; }
+      .count .l { font-size: 0.68rem; color: #9a9aad; text-transform: uppercase; }
+      .hint { font-size: 0.72rem; color: #6b6b7b; margin-top: 12px; line-height: 1.4; }
     </style>
   </head>
   <body>
@@ -65,73 +57,25 @@
       <div class="logo">👀</div>
       <div>
         <h1>Unfollowing</h1>
-        <p class="sub">Descubre quién te deja de seguir</p>
+        <p class="sub">Extractor de seguidores</p>
       </div>
     </div>
 
-    <div class="steps">
-      <div class="step" id="s1"><div class="dot"></div>1 · Extraer</div>
-      <div class="step" id="s2"><div class="dot"></div>2 · Descargar</div>
-      <div class="step" id="s3"><div class="dot"></div>3 · Ver en el dashboard</div>
+    <button id="extract">Extraer ahora</button>
+    <button id="download" class="secondary">⬇ Descargar snapshot.json</button>
+    <button id="copy" class="secondary">📋 Copiar al portapapeles</button>
+
+    <div class="counts" id="counts" style="display:none">
+      <div class="count"><div class="n" id="nFollowers">0</div><div class="l">Seguidores</div></div>
+      <div class="count"><div class="n" id="nFollowing">0</div><div class="l">Seguidos</div></div>
     </div>
 
-    <!-- Antes de empezar -->
-    <section id="v-idle">
-      <div class="card">
-        <h2>Saca tus listas de Instagram</h2>
-        <p>Guardamos una foto de tus seguidores y seguidos. Comparando dos fotos sabrás quién te dejó de seguir.</p>
-        <ul>
-          <li>Necesitas la sesión iniciada en instagram.com.</li>
-          <li>Tarda de segundos a varios minutos según tu cuenta.</li>
-        </ul>
-      </div>
-      <button id="extract" class="primary">Extraer ahora</button>
-    </section>
+    <div id="status"></div>
 
-    <!-- Extrayendo -->
-    <section id="v-running" hidden>
-      <div class="card">
-        <h2>Extrayendo…</h2>
-        <p>Puedes cerrar esta ventana: seguirá en segundo plano y el archivo se descargará solo.</p>
-        <div class="counts">
-          <div class="count">
-            <div class="n"><span id="nFollowers">0</span><span class="of" id="eFollowers"></span></div>
-            <div class="l">Seguidores</div>
-            <div class="bar"><div id="bFollowers"></div></div>
-          </div>
-          <div class="count">
-            <div class="n"><span id="nFollowing">0</span><span class="of" id="eFollowing"></span></div>
-            <div class="l">Seguidos</div>
-            <div class="bar"><div id="bFollowing"></div></div>
-          </div>
-        </div>
-        <div class="note" id="note"></div>
-      </div>
-    </section>
-
-    <!-- Terminado -->
-    <section id="v-done" hidden>
-      <div class="card ok">
-        <h2>✔ ¡Listo!</h2>
-        <p id="doneText"></p>
-        <div id="warnings"></div>
-      </div>
-      <a id="dashboard" class="btn primary" href="https://edwardravelo.github.io/unfollowingApp/" target="_blank">Abrir el dashboard e importar</a>
-      <button id="copy" class="ghost">📋 Copiar (para pegar con Ctrl+V en el dashboard)</button>
-      <button id="download" class="link">¿No ves el archivo? Descargarlo otra vez</button>
-      <button id="again" class="link">Hacer otra extracción</button>
-    </section>
-
-    <!-- Error -->
-    <section id="v-error" hidden>
-      <div class="card err">
-        <h2>No se pudo completar</h2>
-        <p id="errorText"></p>
-      </div>
-      <button id="retry" class="primary">Reintentar</button>
-    </section>
-
-    <div class="foot">Todo se queda en tu equipo. Nada se sube a ningún servidor.</div>
+    <div class="hint">
+      Debes tener una pestaña de <b>instagram.com</b> abierta y con sesión iniciada.
+      Los datos no salen de tu equipo: se guardan en el archivo que descargues.
+    </div>
 
     <script src="popup.js"></script>
   </body>
